@@ -1,10 +1,9 @@
-var SCALE = 1.6;
-
 window.Revealzoomzi = function () {
   return {
     id: "Revealzoomzi",
     init: function (deck) {
       const config = deck.getConfig().Revealzoomzi;
+      const SCALE = config.zoomScale;
       document.addEventListener("DOMContentLoaded", function () {
         if (config.zoomDev) {
           window._zoomzi_state = {};
@@ -14,7 +13,7 @@ window.Revealzoomzi = function () {
           // console.log(zoomableElements);
           // console.log(zoomziElements);
 
-          zoomziElements.forEach(setupZoomControls);
+          zoomziElements.forEach((x) => setupZoomControls(x, SCALE));
           zoomableElements.forEach((z) => {
             // console.log(z);
             window._zoomzi_state[z.getAttribute("data-zoom-id")] = {
@@ -56,7 +55,7 @@ window.Revealzoomzi = function () {
                 // document.querySelector("#holder_two img").style = `${currentStyles};transform: scale(1.5); transform-origin: bottom left`  }
                 zoomzi_img.style.transition = "all 3s ease-in";
                 if (+zoomX != -1) {
-                  zoomzi_img.style.transform = "scale(1.5)";
+                  zoomzi_img.style.transform = `scale(${SCALE})`;
                   zoomzi_img.style.transformOrigin = `${zoomX}% ${zoomY}%`;
                 }
               }
@@ -112,7 +111,7 @@ function getZoomableElements() {
   return document.querySelectorAll("section.zoomable");
 }
 
-function setupZoomControls(elem) {
+function setupZoomControls(elem, scale) {
   const dot = addDot();
   attachEventListeners(elem);
 
@@ -158,8 +157,8 @@ function setupZoomControls(elem) {
     const x = event.clientX - rect.left; // pixel X
     const y = event.clientY - rect.top; // pixel Y
 
-    const tx = container_rect.width / 2 - x * 1.5;
-    const ty = container_rect.height / 2 - y * 1.5;
+    const tx = container_rect.width / 2 - x * scale;
+    const ty = container_rect.height / 2 - y * scale;
 
     const originX = (x / rect.width) * 100;
     const originY = (y / rect.height) * 100;
