@@ -6,7 +6,7 @@ format:
       zoomDev: false
       zoomScale: 1.5
       zoomState: |
-        {"1":{"clientX":41.27076335217391,"clientY":24.20962705874866},"2":{"clientX":-1,"clientY":-1},"3":{"clientX":67.79904184628481,"clientY":82.59132486459636}}
+        {"1":{"clientX":63.59958463293134,"clientY":43.260496869077905},"2":{"clientX":-1,"clientY":-1},"3":{"clientX":54.58611549207512,"clientY":76.65073105277325}}
 revealjs-plugins:
   - zoomzi
 filters:
