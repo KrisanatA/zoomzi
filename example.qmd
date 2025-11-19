@@ -1,0 +1,56 @@
+---
+title: "zoomzi Example"
+format:
+  revealjs:
+    Revealzoomzi:
+      zoomDev: true
+      zoomState: |
+        {"1":{"clientX":41.16833756648236,"clientY":46.333217806227786},"2":{"clientX":-1,"clientY":-1},"3":{"clientX":-1,"clientY":-1}}
+revealjs-plugins:
+  - zoomzi
+filters:
+  - zoomzi
+---
+
+## Firstly, {.zoomable data-zoom-id=1} 
+
+```{r}
+#| warning: false
+#| message: false
+library(ggplot2)
+library(tibble)
+```
+
+:::{.zoomzi}
+```{r}
+p <- tibble(x = letters[1:4], y = rnorm(4)) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_line()
+p
+```
+:::
+
+## Now about that
+
+1. It's just there
+2. It's just not zooming
+3. But what if it could
+
+## Secondly {.zoomable data-zoom-id=2}
+
+:::{.zoomzi}
+```{r}
+p
+```
+:::
+
+## Eh? {.zoomable data-zoom-id=3}
+
+:::{.zoomzi}
+```{r}
+tibble(x = letters[1:20], y = rnorm(20)) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_col()
+```
+:::
