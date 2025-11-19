@@ -29,14 +29,11 @@ window.Revealzoomzi = function () {
               elem.style.transition = "all 3s ease-in";
             });
             Reveal.on("slidechanged", (event) => {
+              console.log(event);
               // Assume state is loaded in
               // TODO: This is what needs to be generated
               let zoom_state = JSON.parse(config.zoomState);
               console.log(zoom_state);
-              // zoom_state = zoom_state
-              //   .replace(/(\d+):/g, '"$1":') // quote numeric keys
-              //   .replace(/(\w+):/g, '"$1":') // quote identifiers
-              //   .replace(/,(\s*[}\]])/g, "$1"); // remove trailing commas
               const idattr = event.currentSlide.getAttribute("data-zoom-id");
               // console.log(Object.keys(zoom_state));
               // console.log(idattr);
@@ -57,6 +54,22 @@ window.Revealzoomzi = function () {
                 if (+zoomX != -1) {
                   zoomzi_img.style.transform = `scale(${SCALE})`;
                   zoomzi_img.style.transformOrigin = `${zoomX}% ${zoomY}%`;
+                }
+              }
+
+              const prevslide =
+                event.previousSlide.getAttribute("data-zoom-id");
+              console.log("previous slide", prevslide);
+              if (Object.keys(zoom_state).includes(prevslide)) {
+                console.log("found prevslide", prevslide);
+                const zoomzi_img =
+                  event.previousSlide.querySelector(".zoomzi img");
+                const zoomzi_div = event.previousSlide.querySelector(".zoomzi");
+                console.log("zoomzi_img", zoomzi_img);
+                if (zoomzi_img) {
+                  zoomzi_img.style.transition = "none";
+                  zoomzi_img.style.transform = `none`;
+                  zoomzi_img.style.transformOrigin = `top left`;
                 }
               }
             });
