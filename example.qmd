@@ -20,6 +20,7 @@ filters:
 #| message: false
 library(ggplot2)
 library(tibble)
+set.seed(123)
 ```
 
 :::{.zoomzi}

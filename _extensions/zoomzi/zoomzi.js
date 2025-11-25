@@ -1,21 +1,21 @@
 window.Revealzoomzi = function () {
+  console.log("Inside Revealzoomzi function");
   return {
     id: "Revealzoomzi",
     init: function (deck) {
-      const config = deck.getConfig().Revealzoomzi;
-      const SCALE = config.zoomScale;
       document.addEventListener("DOMContentLoaded", function () {
+        const config = deck.getConfig().Revealzoomzi;
+        const SCALE = config.zoomScale;
+
         if (config.zoomDev) {
+          console.log("Got zoomDev");
           window._zoomzi_state = {};
 
           const zoomableElements = getZoomableElements();
           const zoomziElements = getZoomziElements();
-          // console.log(zoomableElements);
-          // console.log(zoomziElements);
 
           zoomziElements.forEach((x) => setupZoomControls(x, SCALE));
           zoomableElements.forEach((z) => {
-            // console.log(z);
             window._zoomzi_state[z.getAttribute("data-zoom-id")] = {
               clientX: -1,
               clientY: -1,
@@ -24,56 +24,47 @@ window.Revealzoomzi = function () {
 
           addSaveMenuButton();
         } else {
-          Reveal.on("ready", () => {
+          console.log("Got zoomProd");
+          if (config.zoomState === undefined) {
+            throw new Error("Zoom State not given");
+          } else {
             document.querySelectorAll(".zoomzi img").forEach((elem) => {
               elem.style.transition = "all 3s ease-in";
             });
             Reveal.on("slidechanged", (event) => {
-              console.log(event);
-              // Assume state is loaded in
-              // TODO: This is what needs to be generated
+              console.log("reveal slide changed");
               let zoom_state = JSON.parse(config.zoomState);
-              console.log(zoom_state);
-              const idattr = event.currentSlide.getAttribute("data-zoom-id");
-              // console.log(Object.keys(zoom_state));
-              // console.log(idattr);
+              const currslide = event.currentSlide.getAttribute("data-zoom-id");
+              const prevslide =
+                event.previousSlide.getAttribute("data-zoom-id");
+              const zoomStateKeys = Object.keys(zoom_state);
 
-              if (Object.keys(zoom_state).includes(idattr)) {
-                console.log("changing");
-                console.log(zoom_state[idattr]);
-                const zoomX = zoom_state[idattr].clientX;
-                const zoomY = zoom_state[idattr].clientY;
+              if (zoomStateKeys.includes(currslide)) {
+                const zoomX = zoom_state[currslide].clientX;
+                const zoomY = zoom_state[currslide].clientY;
                 const zoomzi_img =
                   event.currentSlide.querySelector(".zoomzi img");
                 const zoomzi_div = event.currentSlide.querySelector(".zoomzi");
-                // console.log(zoomzi_img);
-                // console.log(zoomzi_div);
-
-                // document.querySelector("#holder_two img").style = `${currentStyles};transform: scale(1.5); transform-origin: bottom left`  }
                 zoomzi_img.style.transition = "all 3s ease-in";
                 if (+zoomX != -1) {
                   zoomzi_img.style.transform = `scale(${SCALE})`;
                   zoomzi_img.style.transformOrigin = `${zoomX}% ${zoomY}%`;
+                  zoomzi_img.style.overflow = "hidden";
                 }
               }
-
-              const prevslide =
-                event.previousSlide.getAttribute("data-zoom-id");
-              console.log("previous slide", prevslide);
-              if (Object.keys(zoom_state).includes(prevslide)) {
-                console.log("found prevslide", prevslide);
+              if (zoomStateKeys.includes(prevslide)) {
                 const zoomzi_img =
                   event.previousSlide.querySelector(".zoomzi img");
                 const zoomzi_div = event.previousSlide.querySelector(".zoomzi");
-                console.log("zoomzi_img", zoomzi_img);
                 if (zoomzi_img) {
                   zoomzi_img.style.transition = "none";
                   zoomzi_img.style.transform = `none`;
                   zoomzi_img.style.transformOrigin = `top left`;
+                  zoomzi_img.style.overflow = "none";
                 }
               }
             });
-          });
+          }
         }
       });
     },
@@ -190,17 +181,14 @@ function setupZoomControls(elem, scale) {
 
   function attachEventListeners(elem) {
     elem.addEventListener("click", (event) => {
-      console.log(event);
       // const coords = getCoordinates(event);
       const coords = getCoordOrigins(event);
       const section = event.target.closest("section[data-zoom-id]");
       const zoomId = section.dataset.zoomId;
-      console.log(zoomId); // "1"
       window._zoomzi_state[zoomId] = {
         clientX: coords.clientX,
         clientY: coords.clientY,
       };
-      console.log(JSON.stringify(window._zoomzi_state));
       moveDot(dot, coords);
     });
   }
